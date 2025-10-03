@@ -17,7 +17,7 @@ struct node{
 class avl{
 private:
     node* root = nullptr;
-public:
+
     void LL(node* &a){      //a = +2; b = +1
         node* b = a->left;
         a->left = b->right;
@@ -85,8 +85,55 @@ public:
         a = c;//nuevo root
     }
 
+    void insertPriv(int x, node* &a, bool &h){
+        if(a == nullptr){
+            a = new node(x);
+            h = true;
+            return;
+        }
+        
+        if(x < a->data){                //izquierda
+            insertPriv(x, a->left, h);
+            if(h){ //si crecio la altura
+                switch(a->bal){
+                    case -1: a->bal = 0; h = false; break;
+                    case  0: a->bal = +1;           break;
+                    case  1: //antes estaba +1
+                        if(a->left->bal == 1) {      LL(a); }
+                        else {                       LR(a); }
+                        a->bal = 0; //ahora esta 0
+                        h = false; //no crecio la altura
+                        break;
+                    }
+            }
+        }else if(x > a->data){          //derecha
+            insertPriv(x, a->right, h);
+            if(h){ //si crecio la altura
+                switch(a->bal){
+                    case  1: a->bal = 0; h = false; break;
+                    case  0: a->bal = -1;           break;
+                    case -1: //antes estaba -1
+                        if(a->right->bal == -1) {      RR(a); }
+                        else {                         RL(a); }
+                        a->bal = 0; //ahora esta 0
+                        h = false; //no crecio la altura
+                        break;
+                    }
+            }
+        }
+        else{ //x == a->data
+            a->count++;
+            h = false; //no crecio la altura
+        }
+                
+    }
+public:
+    void insert(int x){
+        bool h = false; //si crecio la altura
+        insertPriv(x, root, h);
+    }
+    avl() = default;
     
-
 
     
 
