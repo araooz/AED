@@ -286,8 +286,8 @@ public:
     void erase(int x){ bool h=false; eraseRec(x, root, h); }
     bool contains(int x) const{ return findRec(root, x); }
 
-    int min() const{ auto p = minNode(root); if(!p) throw runtime_error("vacio"); return p->data; }
-    int max() const{ auto p = maxNode(root); if(!p) throw runtime_error("vacio"); return p->data; }
+    int mini() const{ auto p = minNode(root); if(!p) throw runtime_error("vacio"); return p->data; }
+    int maxi() const{ auto p = maxNode(root); if(!p) throw runtime_error("vacio"); return p->data; }
 
     int height() const{ return heightRec(root); }
     long long size() const{ return sizeRec(root); }
@@ -307,5 +307,81 @@ public:
 };
 
 
+
+int main(){
+    avl T;
+
+    auto show = [&](const string& tag){
+        cout << "\n[" << tag << "]\n";
+        cout << "inorder:  "; T.inorder();
+        cout << "preorder: "; T.preorder();
+        cout << "postorder:"; T.postorder();
+        cout << "height=" << T.height() << "  size=" << T.size()
+             << "  valid=" << (T.validate() ? "ok" : "FAIL") << "\n";
+        if(!T.empty()){
+            cout << "min=" << T.mini() << "  max=" << T.maxi() << "\n";
+        }
+    };
+
+    // ----- Rotaciones de inserción -----
+    // LL: 30,20,10
+    T.clear();
+    T.insert(30); T.insert(20); T.insert(10);
+    show("LL (30,20,10)");
+
+    // LR: 30,10,20
+    T.clear();
+    T.insert(30); T.insert(10); T.insert(20);
+    show("LR (30,10,20)");
+
+    // RR: 10,20,30
+    T.clear();
+    T.insert(10); T.insert(20); T.insert(30);
+    show("RR (10,20,30)");
+
+    // RL: 10,30,20
+    T.clear();
+    T.insert(10); T.insert(30); T.insert(20);
+    show("RL (10,30,20)");
+
+    // ----- Duplicados -----
+    T.clear();
+    T.insert(10); T.insert(10); T.insert(10);
+    show("Duplicados (10 x3)");
+
+    // ----- Prueba completa -----
+    T.clear();
+    vector<int> v = {30,20,40,10,25,35,50,5,15,45,60};
+    for(int x: v) T.insert(x);
+    show("Arbol completo inicial");
+    cout << boolalpha
+         << "contains(25)=" << T.contains(25)
+         << "  contains(99)=" << T.contains(99) << "\n";
+
+    // Borrar hoja: 5
+    T.erase(5);
+    show("erase hoja 5");
+
+    // Borrar hoja: 60
+    T.erase(60);
+    show("erase hoja 60");
+
+    // Borrar nodo con un hijo: 50 (ahora solo tiene 45)
+    T.erase(50);
+    show("erase un hijo 50");
+
+    // Borrar nodo con dos hijos: 30 (raíz original)
+    T.erase(30);
+    show("erase dos hijos 30");
+
+    // Stress pequeño: números 1..20 y borrar pares
+    T.clear();
+    for(int i=1;i<=20;++i) T.insert(i);
+    show("insert 1..20");
+    for(int i=2;i<=20;i+=2) T.erase(i);
+    show("erase pares 2..20");
+
+    return 0;
+}
 
 
