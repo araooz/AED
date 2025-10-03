@@ -280,6 +280,8 @@ private:
 public:
     void insert(int x){ bool h = false; insertPriv(x, root, h);}
     avl() = default;
+    ~avl(){ clear(); }
+
 
     void erase(int x){ bool h=false; eraseRec(x, root, h); }
     bool contains(int x) const{ return findRec(root, x); }
